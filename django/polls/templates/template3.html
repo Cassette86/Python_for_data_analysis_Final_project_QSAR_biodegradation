@@ -17,7 +17,33 @@
     <body>
         <h1>Final Project Python for Data Analysis</h1>
     </body>
-    
+    <body>
+      {% comment %} On a testé 4 modeles : Random Forest, SVM, KNN et Logistic Regression {% endcomment %}
+        <p> We have tested 4 models : Random Forest, SVM, KNN and Logistic Regression </p>
+        <p> Here we can find the details of each model </p>
+    <body>
+
+      <label for="model-select"></label>
+
+      <form action="apply_Model2">
+      <label for="model-select">Choose a detail : </label>
+          <select name="model" id="model-select" onchange='if(this.value != 0) { this.form.submit(); }'>
+              <option value="0">--Choose a detail--</option>
+              <option value='Mean_Square_Error'>Mean Square Error</option>
+              <option value='Precision_Score'>Precision Score</option>
+              <option value='Recall_Score'>Recall Score</option>
+              <option value='F1_Score'>F1 Score</option>
+              <option value='Accuracy_Score'>Accuracy Score</option>
+
+              
+              
+              
+          </select>
+      </form>
+     {{plot_html|safe}}
+  </body>
+
+
 
 
     

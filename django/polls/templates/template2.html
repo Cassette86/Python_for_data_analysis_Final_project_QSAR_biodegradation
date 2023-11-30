@@ -19,13 +19,18 @@
     </body>
     <body>
 
-        <label for="model-select"></label>
+        <label for="visu-select"></label>
 
         <form action="apply_Model">
-        <label for="model-select">Choose a visualization : </label>
-            <select name="model" id="model-select" onchange='if(this.value != 0) { this.form.submit(); }'>
+        <label for="visu-select">Choose a visualization : </label>
+            <select name="visu" id="visu-select" onchange='if(this.value != 0) { this.form.submit(); }'>
                 <option value="0">--Choose a visualization--</option>
                 <option value='Outliers_Removal'>Outliers Removal</option>
+                <option value='Correlation_Matrix'>Correlation Matrix</option>
+                <option value='% RB/NRB'>% RB/NRB</option>
+                <option value='Data_Distribution'>Data Distribution</option>
+
+                
                 {% comment %} <option value='Carte_de_France'>Prix m² en France</option> {% endcomment %}
                 
             </select>
