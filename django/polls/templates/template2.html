@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<htlm>
+    <head>
+        <style>
+          /* Style pour le titre */
+          h1 {
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            text-decoration: underline;
+            color: red;
+          }
+        </style>
+        <meta charset="utf-8">
+        <title>Final Project Python for Data Analysis</title>
+    </head>
+    <body>
+        <h1>Final Project Python for Data Analysis</h1>
+    </body>
+    <body>
+
+        <label for="model-select"></label>
+
+        <form action="apply_Model">
+        <label for="model-select">Choose a visualization : </label>
+            <select name="model" id="model-select" onchange='if(this.value != 0) { this.form.submit(); }'>
+                <option value="0">--Choose a visualization--</option>
+                <option value='Outliers_Removal'>Outliers Removal</option>
+                {% comment %} <option value='Carte_de_France'>Prix m² en France</option> {% endcomment %}
+                
+            </select>
+        </form>
+       {{plot_html|safe}}
+    </body>
+</htlm>
