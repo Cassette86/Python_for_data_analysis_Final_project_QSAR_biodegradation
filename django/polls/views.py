@@ -112,7 +112,7 @@ def distribution():
                 #histogram for RB
                 fig.add_trace(go.Histogram(x = RB[columns[k]], name = "RB", marker_color = color[0]), row = i + 1, col = j + 1)
                 
-                #histogram for NRB but with a big marker size
+                #histogram for NRB
                 fig.add_trace(go.Histogram(x = NRB[columns[k]], name = "NRB", marker_color = color[1], opacity = 0.5), row = i + 1, col = j + 1)
             
     fig.update_layout(title_text = "Data Distribution")
@@ -127,7 +127,6 @@ def modeling(request):
     }
     return render(request, "template3.html", context)
 
-#sur cette partie on veut faire le index_modeling pour que l'utilisateur puisse choisir le model qu'il veut
 def index_modeling(request):
     template=loader.get_template("template3.html")
     if (request.GET['model'] == 'Mean_Square_Error'):
