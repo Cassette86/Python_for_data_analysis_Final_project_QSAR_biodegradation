@@ -4,12 +4,13 @@ from django.http import HttpResponse
 from django.template import loader
 import pandas as pd
 import numpy as np
-from matplotlib import pyplot as plt
+import seaborn as sns
 import geopandas as gpd
 from django.db import models
 from django_matplotlib import MatplotlibFigureField
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 #import des datasets
 df=pd.read_csv('biodeg.csv',sep=';')
@@ -17,7 +18,7 @@ df = df.dropna(axis=1)
 df.replace(["RB","NRB"],[1,0], inplace = True)
 
 
-
+################################################################################################################################
 # page d'accueil (pour choisir entre l'année 2022 et la comparaison)
 def Accueil(request):
     template = loader.get_template("template0.html")
@@ -25,12 +26,16 @@ def Accueil(request):
     }
     return HttpResponse(template.render(context, request))
 
+
+################################################################################################################################
 def info_data(request):
     template = loader.get_template("template1.html")
     context={
     }
     return render(request, "template1.html", context)
 
+
+################################################################################################################################
 def visualization(request):
     template = loader.get_template("template2.html")
     context={
@@ -39,14 +44,12 @@ def visualization(request):
 
 def index_visualization(request):
     template=loader.get_template("template2.html")
-    # if (request.GET['visu'] == 'Outliers_Removal'):
-    #     plot_html=Remove_outliers()
     if (request.GET['visu'] == 'Correlation_Matrix'):
         plot_html=matrix()
-    # elif (request.GET['visu'] == '% RB/NRB'):
-    #     plot_html=RB_NRB()
-    # elif (request.GET['visu'] == 'Data_Distribution'):
-    #     plot_html=distribution()
+    elif (request.GET['visu'] == 'RB_NRB'):
+        plot_html=RB_NRB()
+    elif (request.GET['visu'] == 'Data_Distribution'):
+        plot_html=distribution()
     context={
         "plot_html":plot_html,
     }
@@ -83,31 +86,46 @@ def matrix():
     return plot_html
 
 # for the % RB/NRB
+def RB_NRB():
+    labels = ['RB','NRB']
+    values = [df['exp'].value_counts()[1],df['exp'].value_counts()[0]]
+    fig = px.pie(values=values, names=labels)
+    fig.update_layout(title="RB/NRB")
+    plot_html=fig.to_html(full_html=False, default_height=500, default_width=700)
+    return plot_html
+
+def distribution():
+    pd.set_option('use_inf_as_na', True)
+    corr_RB_NRB = list(set(df.columns))
+    RB = df.loc[df["exp"] == 1]
+    NRB = df.loc[df["exp"] == 0]
+    features = corr_RB_NRB
+    color = ["green", "red"]
+    fig = make_subplots(rows = 2, cols = 2, subplot_titles = features)
+    k = 0
+    columns = list(df.columns)
+    for i in range(2):
+        for j in range(2):
+            if i == 9 and j == 2:
+                break
+            else:
+                #histogram for RB
+                fig.add_trace(go.Histogram(x = RB[columns[k]], name = "RB", marker_color = color[0]), row = i + 1, col = j + 1)
+                
+                #histogram for NRB but with a big marker size
+                fig.add_trace(go.Histogram(x = NRB[columns[k]], name = "NRB", marker_color = color[1], opacity = 0.5), row = i + 1, col = j + 1)
+            
+    fig.update_layout(title_text = "Data Distribution")
+    plot_html=fig.to_html(full_html=False, default_height=500, default_width=700)
+    return plot_html
 
 
+################################################################################################################################
 def modeling(request):
     template = loader.get_template("template3.html")
     context={
     }
     return render(request, "template3.html", context)
-
-# {% comment %} on cherche a creer un choix de model
-#       si l'utilisateur choisi Random Forest, on affiche les resultats de Random Forest
-#       si l'utilisateur choisi KNN, on affiche les resultats de KNN
-#       si l'utilisateur choisi SVM, on affiche les resultats de SVM
-#       si l'utilisateur choisi Logistic Regression, on affiche les resultats de Logistic Regression {% endcomment %}
-      
-#       {% comment %} #on cree un formulaire pour que l'utilisateur puisse choisir le model qu'il veut {% endcomment %}
-#       <form action="/result" method="post">
-#         <label for="model">Choose a model:</label>
-#         <select name="model" id="model">
-#           <option value="Random Forest">Random Forest</option>
-#           <option value="KNN">KNN</option>
-#           <option value="SVM">SVM</option>
-#           <option value="Logistic Regression">Logistic Regression</option>
-#         </select>
-#         <input type="submit" value="Submit">
-#       </form>
 
 #sur cette partie on veut faire le index_modeling pour que l'utilisateur puisse choisir le model qu'il veut
 def index_modeling(request):
@@ -122,15 +140,12 @@ def index_modeling(request):
         plot_html=F1_Score()
     elif (request.GET['model'] == 'Accuracy_Score'):
         plot_html=Accuracy_Score()
+    elif (request.GET['model'] == 'Runtime'):
+        plot_html=Runtime()
     context={
         "plot_html":plot_html,
     }
     return HttpResponse(template.render(context, request))
-
-
-    
-        
-
 
 #4 models : Random Forest, KNN, SVM, Logistic Regression
 #Random Forest
@@ -139,8 +154,8 @@ def index_modeling(request):
 # 0.8405797101449275 : recall score
 # 0.8345323741007195 : f1 score 
 # 0.8888888888888888 : accuracy score
-# 131.8028564453125 seconds : time
-Random_Forest = [33.3, 82.9, 84.1, 83.5, 88.8, 131.8, "green"]
+# 128.53273057937622 seconds : time
+Random_Forest = [33.3, 82.9, 84.1, 83.5, 88.8, 128.5, "green"]
 
 #SVM
 # 0.34752402342845795 : mean square error
@@ -148,18 +163,18 @@ Random_Forest = [33.3, 82.9, 84.1, 83.5, 88.8, 131.8, "green"]
 # 0.8115942028985508 : recall score 
 # 0.8175182481751825 : f1 score
 # 0.8792270531400966 : accuracy score
-# 209.68421578407288 seconds : time
-SVM = [34.8, 82.4, 81.2, 81.7, 87.9, 209.7, "red"]
+# 218.4146363735199 seconds : time
+SVM = [34.8, 82.4, 81.2, 81.7, 87.9, 218.4, "red"]
 
 
 #Logistic Regression
-# 0.3086066999241838 : mean square error
+# 0.3108349360801046 : mean square error
 # 0.8450704225352113 : precision score 
 # 0.8695652173913043 : recall score 
 # 0.8571428571428571 : f1 score
 # 0.9033816425120773 : accuracy score
-# 282.1229441165924 seconds : time
-Logistic_Regression = [30.8, 84.5, 86.9, 85.7, 90.3, 282.1, "blue"]
+# 275.19812989234924 seconds : time
+Logistic_Regression = [31.1, 84.5, 86.9, 85.7, 90.3, 275.2, "blue"]
 
 #KNN
 # 0.3108349360801046 : mean square error
@@ -167,8 +182,8 @@ Logistic_Regression = [30.8, 84.5, 86.9, 85.7, 90.3, 282.1, "blue"]
 # 0.8695652173913043 : recall score 
 # 0.8571428571428571 : f1 score
 # 0.9033816425120773 : accuracy score
-# 43.4437313079834 seconds : time
-KNN = [31.1, 84.5, 86.9, 85.7, 90.3, 43.4, "yellow"]
+# 38.84143805503845 seconds : time
+KNN = [31.1, 84.5, 86.9, 85.7, 90.3, 38.8, "yellow"]
 
 #on veut plot des barres pour chaque valeur de chaque model et les classer de la plus petite a la plus grande
 
@@ -176,12 +191,10 @@ def Mean_Square_Error():
     #on veut des plot barres triees par ordre croissant
     mse_values=[Random_Forest[0], SVM[0], Logistic_Regression[0], KNN[0]]
     models=["Random Forest", "SVM", "Logistic Regression", "KNN"]
-    colors=[Random_Forest[6], SVM[6], Logistic_Regression[6], KNN[6]]
-    #on fait la figure avec les valeurs qu'on doit trier
-    fig=px.bar(x=models, y=mse_values, color=colors)
+    fig=px.bar(x=models, y=mse_values, color=mse_values, color_continuous_scale='Spectral_r')
     fig.update_layout(title="Mean Square Error")
-    #on convertit la figure en html
     plot_html=fig.to_html(full_html=False, default_height=500, default_width=700)
+    return plot_html
 
 
 def Precision_Score():
@@ -213,5 +226,13 @@ def Accuracy_Score():
     models=["Random Forest", "SVM", "Logistic Regression", "KNN"]
     fig=px.bar(x=models, y=accuracy_values, color=accuracy_values, color_continuous_scale='Spectral_r')
     fig.update_layout(title="Accuracy Score")
+    plot_html=fig.to_html(full_html=False, default_height=500, default_width=700)
+    return plot_html
+
+def Runtime():
+    runtime_values=[Random_Forest[5], SVM[5], Logistic_Regression[5], KNN[5]]
+    models=["Random Forest", "SVM", "Logistic Regression", "KNN"]
+    fig=px.bar(x=models, y=runtime_values, color=runtime_values, color_continuous_scale='Spectral_r')
+    fig.update_layout(title="Runtime")
     plot_html=fig.to_html(full_html=False, default_height=500, default_width=700)
     return plot_html

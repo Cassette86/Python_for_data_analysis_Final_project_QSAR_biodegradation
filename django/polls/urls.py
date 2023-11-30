@@ -10,7 +10,6 @@ urlpatterns = [
     path('apply_Model', views.index_visualization, name='index'),
 
     path("page3", views.modeling, name="index"),
-    #index_modeling : <form action="/result" method="post">
     path('apply_Model2', views.index_modeling, name='index'),
 
 ]
