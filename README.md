@@ -1,8 +1,8 @@
 # Python_DataAnalysis_Final_Project
-# QSAR Biodegradation
+QSAR Biodegradation :
 
-# RB = ready biodegradable
-# NRB = not ready biodegradable 
+- RB = ready biodegradable
+- NRB = not ready biodegradable 
 
 
 # if you want to run the django file : 
