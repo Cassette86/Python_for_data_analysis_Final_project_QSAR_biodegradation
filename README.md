@@ -1,9 +1,11 @@
 # Python_DataAnalysis_Final_Project
-# 15 minutes de présentation
+# QSAR Biodegradation
 
-# RB = ready biodegradable (Vert)
-# NRB = not ready biodegradable (Orange)
+# RB = ready biodegradable
+# NRB = not ready biodegradable 
 
-# Etape 1 : Trouver les colonnes utiles (PCA) (Regression) (Normalisation)
-# Pour les abérrantes : KNN ou 25%-75% (à faire avant la normalisation/standardidation)
-# Etape 2 : après on a limite fini ^^
+
+# if you want to run the django file : 
+1) go to .../django in the terminal
+2) write "py manage.py runserver"
+3) write this url : http://127.0.0.1:8000/polls/
