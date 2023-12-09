@@ -1,4 +1,7 @@
-https://static.vecteezy.com/ti/vecteur-libre/p3/2453856-chimie-flacon-dessin-anime-gratuit-vectoriel.jpg
+<div id="header" align="center">
+  <h1>Python for data analysis : Final project about QSAR biodegradation dataset.</h1>
+  <img src="https://media2.giphy.com/media/fh6AWgftPvfKRcfyvv/giphy.gif?cid=ecf05e47rsstjaft6xektxluy4zkwe0zg963tdkx58yx9icf&ep=v1_gifs_search&rid=giphy.gif&ct=g" width="100"/>
+</div>
 
 # Python_DataAnalysis_Final_Project
 QSAR Biodegradation :
